@@ -32,7 +32,7 @@ module.exports = function (app) {
 
   // Displays a single friend or returns false
   app.post("/api/friends", function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     //math logic to determine best match
     friendsData.push(req.body);
     var newData = JSON.stringify(friendsData)
@@ -44,26 +44,50 @@ module.exports = function (app) {
       // console.log(friendsData[0]);
 
     });
+
     var bestMatch = {
       name: "",
       photo: "",
-      friendDifference: 1000
+      friendDifference: 0
     };
-    var totalDifference = 0;
-    for (var i = 0; i < friendsData.length; i++) {
-      console.log(friendsData[i].name);
-      totalDifference = 0;
-      for (var a = 0; a < friends[i].scores[a]; a++) {
-        totalDifference += Math.abs(parseInt(newData[a]) - parseInt(friendsData[i].scores[a]));
-        if (totalDifference <= bestMatch.friendDifference) {
 
-          bestMatch.name = friends[i].name;
-          bestMatch.photo = friends[i].photo;
-          bestMatch.friendDifference = totalDifference;
-        }
-          
+    var totalDifference = 0;
+    // for (var i = 0; i < friendsData.length; i++) {
+    //   console.log(friendsData[i].name);
+    //   // totalDifference = 0;
+    //   for (var a = 0; a < friendsData[i].scores[a]; a++) {
+    //     totalDifference += Math.abs(parseInt(newData[a]) - parseInt(friendsData[i].scores[a]));
+    //     if (totalDifference >= bestMatch.friendDifference) {
+
+    //       bestMatch.name = friends[i].name;
+    //       bestMatch.photo = friends[i].photo;
+    //       bestMatch.friendDifference = totalDifference;
+    //     }
+
+    //   }
+    // }
+    var leastDifference;
+    var currentFriendScore;
+    var newFriendsScore;
+    for (var x = 0; x < newData.scores; x++) {
+      newFriendsScore += parseInt(newData.scores[x]);
+    }
+    for (var i = 0; i < friendsData.length; i++) {
+      currentFriendScore = 0;
+      for (var a = 0; a < friendsData[i].scores; a++) {
+        currentFriendScore += parseInt(friendsData[i].scores[a]);
       }
-    }console.log(res.json(bestMatch));
+      var difference = Math.abs(newFriendsScore - currentFriendScore);
+      if (difference < leastDifference || leastDifference == undefined){
+        leastDifference = difference;
+        bestMatch.name = friendsData[i].name;
+        bestMatch.photo = friendsData[i].photo;
+        bestMatch.friendDifference = leastDifference;
+      }
+      
+    }
+    return res.json(bestMatch);
   });
+
 }
 //   end code
