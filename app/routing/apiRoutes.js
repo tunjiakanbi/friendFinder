@@ -83,6 +83,7 @@ module.exports = function (app) {
         bestMatch.name = friendsData[i].name;
         bestMatch.photo = friendsData[i].photo;
         bestMatch.friendDifference = leastDifference;
+        // console.log(leastDifference);
       }
       
     }
